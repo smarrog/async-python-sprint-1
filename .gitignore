@@ -3,3 +3,7 @@ creds.ini
 .idea/
 __pycache__/
 *.pyc
+
+logs/*
+output/*
+tests/output/*
