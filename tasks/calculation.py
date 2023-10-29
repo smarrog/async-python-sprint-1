@@ -1,9 +1,10 @@
-from typing import Callable, Any
+from typing import Callable
 from statistics import mean
 
 from abstract_task import AbstractTask
 from day import Day
 from city import CityWithDays, CityData
+from exceptions import EmptyCalculationResultException, InvalidCalculationResultException
 
 DAYS_FIELD = 'days'
 AVERAGE_TEMPERATURE_FIELD = 'temp_avg'
@@ -16,16 +17,16 @@ class DataCalculationTask(AbstractTask):
         self._data = data
         self._calculate_func = calculate_func
 
-    def _run(self) -> Any:
-        self.logger.info(f'Calculate data for {self._data.name}.')
+    def _run(self) -> CityWithDays:
+        self.logger.info('Calculate data for %s.', self._data.name)
 
         result = self._calculate_func(self._data.data)
 
         if result is None:
-            raise Exception()
+            raise EmptyCalculationResultException()
 
         if DAYS_FIELD not in result:
-            raise Exception()
+            raise InvalidCalculationResultException()
 
         days_data = result[DAYS_FIELD]
 
@@ -41,12 +42,12 @@ class DataCalculationTask(AbstractTask):
 
         city = CityWithDays(self._data.name, average_temperature, relevant_conditions_hours, days)
 
-        self.logger.info(f'Successfully calculated. {city}')
+        self.logger.info('Successfully calculated %s', city)
 
         return city
 
     def _on_exception(self, exception: Exception):
-        self.logger.error(f'Failed to calculate data for {self._data.name}.')
+        self.logger.error('Failed to calculate data for %s', self._data.name)
         return None
 
     @staticmethod

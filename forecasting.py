@@ -82,7 +82,7 @@ def show_result(best_cities: list[City]) -> None:
 
 
 def log_milestone(name: str) -> None:
-    logger.info(f'===========================> {name} <===========================')
+    logger.info('===========================> %s <===========================', name)
 
 
 def run_task(task: AbstractTask) -> Any:
@@ -101,21 +101,13 @@ def run_tasks_in_multiple_threads(tasks: Iterator[AbstractTask]) -> Iterator[Any
 
 
 def run_tasks_in_multiple_processes(tasks: Iterator[AbstractTask]) -> Iterator[Any]:
-    processes_amount = get_max_processes()
-    if processes_amount == 1:
+    if not USE_MULTIPLE_PROCESSES:
         results = (task.run() for task in tasks)
         return results
 
-    with multiprocessing.Pool(processes=processes_amount) as pool:
+    with multiprocessing.Pool() as pool:
         results = pool.map(run_task_in_other_process, tasks)
     return results
-
-
-def get_max_processes():
-    if USE_MULTIPLE_PROCESSES:
-        return multiprocessing.cpu_count()
-    else:
-        return 1
 
 
 if __name__ == "__main__":

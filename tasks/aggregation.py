@@ -16,7 +16,7 @@ class DataAggregationTask(AbstractTask):
         self._database_path = database_path
 
     def _run(self) -> Any:
-        self.logger.info(f'Aggregate data.')
+        self.logger.info('Aggregate data.')
 
         sorted_cities = sorted(self._cities, key=lambda e: (-e.average_temperature, -e.relevant_conditions_hours))
 
@@ -41,7 +41,7 @@ class DataAggregationTask(AbstractTask):
         with open(self._database_path, 'w') as f:
             json.dump(database, f, indent=4, ensure_ascii=False)
 
-        self.logger.info(f'Data for was aggregated. Database was written to {self._database_path}')
+        self.logger.info('Data for was aggregated. Database was written to %s', self._database_path)
 
     def _on_exception(self, exception: Exception):
-        self.logger.exception(f'Failed to aggregate data.')
+        self.logger.exception('Failed to aggregate data.')

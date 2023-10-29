@@ -1,5 +1,4 @@
 import json
-from typing import Any
 
 from abstract_task import AbstractTask
 from city import City
@@ -13,7 +12,7 @@ class DataAnalyzingTask(AbstractTask):
     def __init__(self, database_path: str) -> None:
         self._database_path = database_path
 
-    def _run(self) -> Any:
+    def _run(self) -> list[City]:
         self.logger.info(f'Analyze')
 
         with open(self._database_path, 'r') as f:

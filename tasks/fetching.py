@@ -1,7 +1,8 @@
-from typing import Callable, Any
+from typing import Callable
 
 from abstract_task import AbstractTask
 from city import CityData
+from exceptions import EmptyFetchResponseException, InvalidFetchResponseException
 
 FORECASTS_FIELD = 'forecasts'
 
@@ -12,19 +13,19 @@ class DataFetchingTask(AbstractTask):
         self._city_url = city_url
         self._get_forecasting = get_forecasting
 
-    def _run(self) -> Any:
-        self.logger.info(f'Fetching data for {self._city_name}.')
+    def _run(self) -> CityData:
+        self.logger.info('Fetching data for %s.', self._city_name)
 
         response = self._get_forecasting(self._city_url)
 
         if response is None:
-            raise Exception()
+            raise EmptyFetchResponseException()
         if FORECASTS_FIELD not in response:
-            raise Exception()
+            raise InvalidFetchResponseException()
 
-        self.logger.info(f'Successfully got data for {self._city_name}')
+        self.logger.info('Successfully got data for %s.', self._city_name)
         return CityData(self._city_name, response)
 
     def _on_exception(self, exception: Exception):
-        self.logger.error(f'Failed to fetch data for {self._city_name}')
+        self.logger.error('Failed to fetch data for %s.', self._city_name)
         return None
